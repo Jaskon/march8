@@ -5,6 +5,7 @@ function createImg() {
     var img = document.createElement('img');
     img.className = 'heart';
     img.src = 'heart1.png';
+    img.style.zIndex = 50;
     document.body.appendChild(img);
     return img;
 }
@@ -87,14 +88,41 @@ function clickMe(e) {
         //randomStyle(imgs[i + heartsCount*3], rowPos, 'bottom2');
     }
 
-    var text = document.createElement('div');
-    text.innerHTML = 'С 8 марта! ^_^';
-    text.style.position = 'absolute';
-    text.style.top = '45%';
-    text.style.fontSize = '60pt';
-    text.style.color = '#dd0033';
-    document.body.appendChild(text);
-    text.style.left = 'calc(50% - ' + text.clientWidth/2 + 'px)';
+    if (/button/i.test(e.target.tagName)) {
+        var text = document.createElement('div');
+        text.innerHTML = 'С 8 марта! ^_^';
+        text.style.position = 'absolute';
+        text.style.top = '42%';
+        text.style.fontSize = '80pt';
+        text.style.color = '#dd0033';
+        text.style.opacity = '0';
+        text.style.transition = '.3s ease-in';
+        text.style.zIndex = '44';
+        text.style.cursor = 'default';
+        text.style.userSelect = 'none';
+        text.addEventListener('click', clickMe);
+        document.body.appendChild(text);
+        text.style.left = 'calc(50% - ' + text.clientWidth/2 + 'px)';
+        setTimeout(function() {
+            text.style.opacity = '1';
+        }, 400);
+
+        var div = document.createElement('div');
+        div.style.position = 'absolute';
+        div.style.left = '0';
+        div.style.top = '20%';
+        div.style.zIndex = '45';
+        div.style.width = '100%';
+        div.style.height = '50%';
+        div.style.transition = '.6s ease-in';
+        div.style.backgroundColor = 'white';
+        document.body.appendChild(div);
+        (function(div) {
+            setTimeout(function() {
+                div.style.left = '-100%';
+            }, 0);
+        })(div);
+    }
 }
 
 document.getElementById('btnClickMe').addEventListener('click', clickMe);

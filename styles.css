@@ -10,4 +10,5 @@
     position: absolute;
     left: calc(50% - 20px);
     top: calc(50% - 10px);
+    z-index: 100;
 }
