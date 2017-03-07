@@ -1,0 +1,13 @@
+.heart {
+    position: fixed;
+    left: 100px;
+    top: 100px;
+    width: 10%;
+    transition: .6s ease-out;
+}
+
+.btnClickMe {
+    position: absolute;
+    left: calc(50% - 20px);
+    top: calc(50% - 10px);
+}
