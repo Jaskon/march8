@@ -1,4 +1,4 @@
-var imgs = [], i, heartsCount = 20, leftPosFactor = 100 / heartsCount;
+var imgs = [], i, heartsCount = 25, leftPosFactor = 100 / heartsCount;
 var rowPos = -9;
 
 function createImg() {
