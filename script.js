@@ -1,4 +1,4 @@
-var imgs = [], img, i, heartsCount = 30;
+var imgs = [], i, heartsCount = 25, leftPosFactor = 100 / heartsCount;
 var rowPos = -7;
 
 function createImg() {
@@ -9,65 +9,80 @@ function createImg() {
     return img;
 }
 
-function randomStyle(img, rowPos, row) {
+function randomStyle(imgs, rowPos, row) {
+    var randomed = [Math.random(), Math.random(), Math.random(), Math.random()];
+
     switch(row) {
         case 'top1':
-            img.style.left = (i * 3.4 - 3 + (Math.random() * 2 - 1)) + '%';
-            img.style.top = (rowPos + 2 + (Math.random() * 8 - 2)) + '%';
-            img.style.transform = 'rotate(' + (Math.random() * 60 - 30) + 'deg) scale(' + (Math.random() / 2.5 + 0.7) + ')';
+            imgs[0].style.left = (i * leftPosFactor - 3 + (randomed[0] * 2 - 1)) + '%';
+            imgs[0].style.top = (rowPos + 2 + (randomed[1] * 8 - 2)) + '%';
+            imgs[0].style.transform = ['rotate(', (randomed[2] * 60 - 30), 'deg) scale(', (randomed[3] / 2.3 + 0.75), ')'].join('');
+
+            imgs[1].style.left = (i * leftPosFactor - 3 + (randomed[0] * 2 - 1)) + '%';
+            imgs[1].style.top = (90 - (rowPos + 4 + (randomed[1] * 8 - 2))) + '%';
+            imgs[1].style.transform = ['rotate(', -(randomed[2] * 60 - 30), 'deg) scale(', ((1 - randomed[3]) / 2.3 + 0.75), ')'].join('');
         break;
 
         case 'top2':
-            img.style.left = (i * 3.4 - 3 + (Math.random() * 2 - 1)) + '%';
-            img.style.top = (rowPos + 12 + (Math.random() * 8 - 2)) + '%';
-            img.style.transform = 'rotate(' + (Math.random() * 60 - 30) + 'deg) scale(' + (Math.random() / 2.5 + 0.6) + ')';
+            imgs[0].style.left = (i * leftPosFactor - 3 + (randomed[0] * 2 - 1)) + '%';
+            imgs[0].style.top = (rowPos + 12 + (randomed[1] * 8 - 2)) + '%';
+            imgs[0].style.transform = ['rotate(', (randomed[2] * 60 - 30), 'deg) scale(', (randomed[3] / 2.3 + 0.65), ')'].join('');
+
+            imgs[1].style.left = (i * leftPosFactor - 3 + (randomed[0] * 2 - 1)) + '%';
+            imgs[1].style.top = (90 - (rowPos + 14 + (randomed[1] * 8 - 2))) + '%';
+            imgs[1].style.transform = ['rotate(', -(randomed[2] * 60 - 30), 'deg) scale(', ((1 - randomed[3]) / 2.3 + 0.65), ')'].join('');
         break;
 
-        case 'bottom1':
-            img.style.left = (i * 3.4 - 3 + (Math.random() * 2 - 1)) + '%';
-            img.style.top = (90 - (rowPos + 4 + (Math.random() * 8 - 2))) + '%';
-            img.style.transform = 'rotate(' + (Math.random() * 60 - 30) + 'deg) scale(' + (Math.random() / 2.5 + 0.7) + ')';
+        /*case 'bottom1':
+            imgs[1].style.left = (i * leftPosFactor - 3 + (Math.random() * 2 - 1)) + '%';
+            imgs[1].style.top = (90 - (rowPos + 4 + (Math.random() * 8 - 2))) + '%';
+            imgs[1].style.transform = ['rotate(', (Math.random() * 60 - 30), 'deg) scale(', (Math.random() / 2.3 + 0.75), ')'].join('');
         break;
 
         case 'bottom2':
-            img.style.left = (i * 3.4 - 3 + (Math.random() * 2 - 1)) + '%';
-            img.style.top = (90 - (rowPos + 14 + (Math.random() * 8 - 2))) + '%';
-            img.style.transform = 'rotate(' + (Math.random() * 60 - 30) + 'deg) scale(' + (Math.random() / 2.5 + 0.6) + ')';
-        break;
+            imgs[1].style.left = (i * leftPosFactor - 3 + (Math.random() * 2 - 1)) + '%';
+            imgs[1].style.top = (90 - (rowPos + 14 + (Math.random() * 8 - 2))) + '%';
+            imgs[1].style.transform = ['rotate(', (Math.random() * 60 - 30), 'deg) scale(', (Math.random() / 2.3 + 0.65), ')'].join('');
+        break;*/
     }
     
 }
 
+var img1, img2;
 for (i = 0; i < heartsCount; i++) {
     // Top row 1
-    img = createImg();
-    randomStyle(img, rowPos - 50, 'top1');
-    imgs[i] = img;
+    img1 = createImg();
+    img2 = createImg();
+    randomStyle([img1, img2], rowPos - 35, 'top1');
+    imgs[i] = img1;
+    imgs[i + heartsCount*2] = img2;
     
     // Top row 2
-    img = createImg();
-    randomStyle(img, rowPos - 70, 'top2');
-    imgs[i + heartsCount] = img;
+    img1 = createImg();
+    img2 = createImg();
+    randomStyle([img1, img2], rowPos - 55, 'top2');
+    imgs[i + heartsCount] = img1;
+    imgs[i + heartsCount*3] = img2;
 
     // Bottom row 1
-    img = createImg();
+    /*img = createImg();
     randomStyle(img, rowPos - 50, 'bottom1');
     imgs[i + heartsCount*2] = img;
     // Bottom row 2
     img = createImg();
     randomStyle(img, rowPos - 70, 'bottom2');
-    imgs[i + heartsCount*3] = img;
+    imgs[i + heartsCount*3] = img;*/
 }
 
 
 
 function clickMe(e) {
     for (i = 0; i < heartsCount; i++) {
-        randomStyle(imgs[i], rowPos, 'top1');
-        randomStyle(imgs[i + heartsCount], rowPos, 'top2');
+        randomStyle([imgs[i], imgs[i + heartsCount*2]], rowPos, 'top1');
+        randomStyle([imgs[i + heartsCount], imgs[i + heartsCount*3]], rowPos, 'top2');
 
-        randomStyle(imgs[i + heartsCount*2], rowPos, 'bottom1');
-        randomStyle(imgs[i + heartsCount*3], rowPos, 'bottom2');
+        //randomStyle(imgs[i + heartsCount*2], rowPos, 'bottom1');
+        //randomStyle(imgs[i + heartsCount*3], rowPos, 'bottom2');
     }
 }
 
