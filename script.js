@@ -53,14 +53,14 @@ for (i = 0; i < heartsCount; i++) {
     // Top row 1
     img1 = createImg();
     img2 = createImg();
-    randomStyle([img1, img2], rowPos - 35, 'top1');
+    randomStyle([img1, img2], rowPos - 40, 'top1');
     imgs[i] = img1;
     imgs[i + heartsCount*2] = img2;
     
     // Top row 2
     img1 = createImg();
     img2 = createImg();
-    randomStyle([img1, img2], rowPos - 55, 'top2');
+    randomStyle([img1, img2], rowPos - 60, 'top2');
     imgs[i + heartsCount] = img1;
     imgs[i + heartsCount*3] = img2;
 
