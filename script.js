@@ -1,5 +1,5 @@
-var imgs = [], i, heartsCount = 10, leftPosFactor = 100 / heartsCount;
-var rowPos = -7;
+var imgs = [], i, heartsCount = 20, leftPosFactor = 100 / heartsCount;
+var rowPos = -9;
 
 function createImg() {
     var img = document.createElement('img');
@@ -77,6 +77,8 @@ for (i = 0; i < heartsCount; i++) {
 
 
 function clickMe(e) {
+    document.getElementById('btnClickMe').style.display = 'none';
+
     for (i = 0; i < heartsCount; i++) {
         randomStyle([imgs[i], imgs[i + heartsCount*2]], rowPos, 'top1');
         randomStyle([imgs[i + heartsCount], imgs[i + heartsCount*3]], rowPos, 'top2');
@@ -84,6 +86,15 @@ function clickMe(e) {
         //randomStyle(imgs[i + heartsCount*2], rowPos, 'bottom1');
         //randomStyle(imgs[i + heartsCount*3], rowPos, 'bottom2');
     }
+
+    var text = document.createElement('div');
+    text.innerHTML = 'С 8 марта! ^_^';
+    text.style.position = 'absolute';
+    text.style.top = '45%';
+    text.style.fontSize = '60pt';
+    text.style.color = '#dd0033';
+    document.body.appendChild(text);
+    text.style.left = 'calc(50% - ' + text.clientWidth/2 + 'px)';
 }
 
 document.getElementById('btnClickMe').addEventListener('click', clickMe);
