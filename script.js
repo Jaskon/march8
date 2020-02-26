@@ -1,17 +1,100 @@
-var imgs = [], i, heartsCount = 25, leftPosFactor = 100 / heartsCount;
-var rowPos = -9;
+//* Settings
+
+let imgs = [], heartsCount = 25, leftPosFactor = 100 / heartsCount;
+const rowPos = -9;
+
+
+//* Move logic
+
+let imgsInMove = [];
+
+function clearImgsInMove() {
+    imgsInMove = [];
+}
+
+function startMoveImg({img, clickDiffX, clickDiffY}) {
+    img.style.transition = 'none';
+    imgsInMove.push({img, clickDiffX, clickDiffY});
+
+    return imgsInMove.length - 1;
+}
+
+function endMoveImg(id) {
+    imgsInMove[id].img.style.transition = '';
+    imgsInMove[id] = null;
+    if (imgsInMove.every(obj => obj === null)) {
+        clearImgsInMove();
+    }
+}
+
+function endMoveAllImgs() {
+    imgsInMove.forEach(({img}) =>
+        img && (img.style.transition = '')
+    );
+    clearImgsInMove();
+}
+
+document.addEventListener('mouseup', () => endMoveAllImgs());
+
+document.addEventListener('mousemove', event =>
+    imgsInMove.forEach(({img, clickDiffX, clickDiffY}) => {
+        img && (img.style.left = `${event.clientX - clickDiffX}px`);
+        img && (img.style.top = `${event.clientY - clickDiffY}px`);
+    })
+);
+
+function onImgMouseDown(event, img) {
+    event.preventDefault();
+
+    const clickDiffX = event.clientX - img.x;
+    const clickDiffY = event.clientY - img.y;
+
+    img.style.left = `${img.x}px`;
+    img.style.top = `${img.y}px`;
+
+    startMoveImg({img, clickDiffX, clickDiffY});
+}
+
+function onImgTouchStart(event, img) {
+    const clickDiffX = event.changedTouches[0].clientX - img.x;
+    const clickDiffY = event.changedTouches[0].clientY - img.y;
+
+    img.style.left = `${img.x}px`;
+    img.style.top = `${img.y}px`;
+
+    const imgMovingId = startMoveImg({img, clickDiffX, clickDiffY});
+
+    img.ontouchmove = event => {
+        img.style.left = `${event.changedTouches[0].clientX - clickDiffX}px`;
+        img.style.top = `${event.changedTouches[0].clientY - clickDiffY}px`;
+    };
+
+    img.ontouchend = () => {
+        endMoveImg(imgMovingId);
+    };
+}
+
+
+//* Img generation/positioning logic
 
 function createImg() {
-    var img = document.createElement('img');
+    const img = document.createElement('img');
     img.className = 'heart';
     img.src = 'heart1.png';
     img.style.zIndex = 50;
+
+    // Touch event (mobile)
+    img.ontouchstart = event => onImgTouchStart(event, img);
+
+    // Mouse event (PC)
+    img.onmousedown = event => onImgMouseDown(event, img);
+
     document.body.appendChild(img);
     return img;
 }
 
-function randomStyle(imgs, rowPos, row) {
-    var randomed = [Math.random(), Math.random(), Math.random(), Math.random()];
+function randomStyle(imgs, rowPos, row, i) {
+    const randomed = [Math.random(), Math.random(), Math.random(), Math.random()];
 
     switch(row) {
         case 'top1':
@@ -46,22 +129,22 @@ function randomStyle(imgs, rowPos, row) {
             imgs[1].style.transform = ['rotate(', (Math.random() * 60 - 30), 'deg) scale(', (Math.random() / 2.3 + 0.65), ')'].join('');
         break;*/
     }
-    
+
 }
 
-var img1, img2;
-for (i = 0; i < heartsCount; i++) {
+let img1, img2;
+for (let i = 0; i < heartsCount; i++) {
     // Top row 1
     img1 = createImg();
     img2 = createImg();
-    randomStyle([img1, img2], rowPos - 40, 'top1');
+    randomStyle([img1, img2], rowPos - 40, 'top1', i);
     imgs[i] = img1;
     imgs[i + heartsCount*2] = img2;
-    
+
     // Top row 2
     img1 = createImg();
     img2 = createImg();
-    randomStyle([img1, img2], rowPos - 60, 'top2');
+    randomStyle([img1, img2], rowPos - 60, 'top2', i);
     imgs[i + heartsCount] = img1;
     imgs[i + heartsCount*3] = img2;
 
@@ -80,17 +163,17 @@ for (i = 0; i < heartsCount; i++) {
 function clickMe(e) {
     document.getElementById('btnClickMe').style.display = 'none';
 
-    for (i = 0; i < heartsCount; i++) {
-        randomStyle([imgs[i], imgs[i + heartsCount*2]], rowPos, 'top1');
-        randomStyle([imgs[i + heartsCount], imgs[i + heartsCount*3]], rowPos, 'top2');
+    for (let i = 0; i < heartsCount; i++) {
+        randomStyle([imgs[i], imgs[i + heartsCount*2]], rowPos, 'top1', i);
+        randomStyle([imgs[i + heartsCount], imgs[i + heartsCount*3]], rowPos, 'top2', i);
 
         //randomStyle(imgs[i + heartsCount*2], rowPos, 'bottom1');
         //randomStyle(imgs[i + heartsCount*3], rowPos, 'bottom2');
     }
 
     if (/button/i.test(e.target.tagName)) {
-        var text = document.createElement('div');
-        text.innerHTML = 'С 8 марта! ^_^';
+        const text = document.createElement('div');
+        text.innerHTML = 'С 8 марта! ^-^';
         text.style.position = 'absolute';
         text.style.top = '42%';
         text.style.fontSize = '80pt';
@@ -107,7 +190,7 @@ function clickMe(e) {
             text.style.opacity = '1';
         }, 400);
 
-        var div = document.createElement('div');
+        const div = document.createElement('div');
         div.style.position = 'absolute';
         div.style.left = '0';
         div.style.top = '20%';
