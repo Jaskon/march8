@@ -74,8 +74,8 @@ function onImgTouchStart(event, img) {
         img.style.top = `${event.targetTouches[0].clientY - clickDiffY}px`;
     };
 
-    img.ontouchend = () => {
-        endMoveImg(imgMovingId, event.touches.length === 1);
+    img.ontouchend = event => {
+        endMoveImg(imgMovingId, event.touches.length === 0);
     };
 }
 
