@@ -6,6 +6,7 @@ const rowPos = -9;
 
 //* Move logic
 
+const isScreenTouchable = 'ontouchstart' in document.documentElement;
 let imgsInMove = [];
 
 function clearImgsInMove() {
@@ -19,10 +20,10 @@ function startMoveImg({img, clickDiffX, clickDiffY}) {
     return imgsInMove.length - 1;
 }
 
-function endMoveImg(id) {
+function endMoveImg(id, clearMovingImgs) {
     imgsInMove[id].img.style.transition = '';
     imgsInMove[id] = null;
-    if (imgsInMove.every(obj => obj === null)) {
+    if (clearMovingImgs) {
         clearImgsInMove();
     }
 }
@@ -34,43 +35,47 @@ function endMoveAllImgs() {
     clearImgsInMove();
 }
 
-document.addEventListener('mouseup', () => endMoveAllImgs());
+if (!isScreenTouchable) {
+    document.addEventListener('mouseup', () => endMoveAllImgs());
 
-document.addEventListener('mousemove', event =>
-    imgsInMove.forEach(({img, clickDiffX, clickDiffY}) => {
-        img && (img.style.left = `${event.clientX - clickDiffX}px`);
-        img && (img.style.top = `${event.clientY - clickDiffY}px`);
-    })
-);
-
-function onImgMouseDown(event, img) {
-    event.preventDefault();
-
-    const clickDiffX = event.clientX - img.x;
-    const clickDiffY = event.clientY - img.y;
-
-    img.style.left = `${img.x}px`;
-    img.style.top = `${img.y}px`;
-
-    startMoveImg({img, clickDiffX, clickDiffY});
+    document.addEventListener('mousemove', event =>
+        imgsInMove.forEach(({ img, clickDiffX, clickDiffY }) => {
+            img && (img.style.left = `${event.clientX - clickDiffX}px`);
+            img && (img.style.top = `${event.clientY - clickDiffY}px`);
+        })
+    );
 }
 
-function onImgTouchStart(event, img) {
-    const clickDiffX = event.changedTouches[0].clientX - img.x;
-    const clickDiffY = event.changedTouches[0].clientY - img.y;
+const onImgMouseDown = !isScreenTouchable && function(event, img) {
+    event.preventDefault();
 
-    img.style.left = `${img.x}px`;
-    img.style.top = `${img.y}px`;
+    const clickDiffX = event.clientX - img.offsetLeft;
+    const clickDiffY = event.clientY - img.offsetTop;
+
+    img.style.left = `${img.left}px`;
+    img.style.top = `${img.top}px`;
+
+    startMoveImg({img, clickDiffX, clickDiffY});
+};
+
+function onImgTouchStart(event, img) {
+    event.preventDefault();
+
+    const clickDiffX = event.targetTouches[0].clientX - img.offsetLeft;
+    const clickDiffY = event.targetTouches[0].clientY - img.offsetTop;
+
+    img.style.left = `${img.left}px`;
+    img.style.top = `${img.top}px`;
 
     const imgMovingId = startMoveImg({img, clickDiffX, clickDiffY});
 
     img.ontouchmove = event => {
-        img.style.left = `${event.changedTouches[0].clientX - clickDiffX}px`;
-        img.style.top = `${event.changedTouches[0].clientY - clickDiffY}px`;
+        img.style.left = `${event.targetTouches[0].clientX - clickDiffX}px`;
+        img.style.top = `${event.targetTouches[0].clientY - clickDiffY}px`;
     };
 
     img.ontouchend = () => {
-        endMoveImg(imgMovingId);
+        endMoveImg(imgMovingId, event.touches.length === 1);
     };
 }
 
